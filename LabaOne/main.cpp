@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     system("clear");
     setlocale(LC_ALL, "Russian");
     std::string choose;
-    Task exem = {1, 2, 1, 0};
+    Task exem = {1, 0, 1, 0};
     std::cout << "Выберите где будете решать в консоли(0) или в текстовом файле(1)" << std::endl;
     std::cin >> outPut;
     // while(true)
@@ -35,14 +35,19 @@ int main(int argc, char **argv)
     //     std::cout << "Вы ввели что то не то" << std::endl;         
     // }
 
-    std::string *test = generateTest(exem);
-    if(exem.io = 0)
-        chekTest(startTest(test), test);
+    float *unswers;
+    int tasks[] = {20, 12};
+    std::string *test = generateTest(exem, unswers);
+    if(!exem.io)
+    {
+        std::cout << "Ваш результат : " << chekTest(startTest(test, exem), test, unswers, exem);
+        std::cout << "\\" << tasks[exem.type] << std::endl;        
+    }
     else
     {
-        writeTest(test);
+        writeTest(test, exem);
         std::cout << "Решите тест внутри файла и запустите программу еще раз, указав название файла в качестве параметра" << std::endl;
     }
-    std::cout << "Программа завершена";
+    std::cout << "Программа завершена" << std::endl;
     return 0;
 }
