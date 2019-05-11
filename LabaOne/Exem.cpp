@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+float* catchTheUnswer(std::string fileName, int amount);
+
 std::string* Exem::generateTest()
 {
     if(number_ == 0)//generate all test
@@ -72,6 +74,12 @@ std::string Exem::generateID()
     int name = unswers_[0]*100 + unswers_[0] * 32 + unswers_[0]*0.43 + unswers_[0]*3;//magic hash
     if(name < 0)
         name *= -1;
+    while(name > 1000)
+        name /= 10;
+    if(number_ == 0)
+        name += tasks_[type_] * 1000;
+    else 
+        name += quantity_ * 1000;
     std::string tmp = std::to_string(name);
     return tmp;
 }
@@ -138,7 +146,7 @@ void Exem::writeTest()
         else
             file << "<<Тест ОГЭ номер - " << testId_ << " >>" << std::endl;    
     for(int i = 0; i < tasks_[type_]; i++)
-        file << "Задание номер " << i << std::endl << test_[i] << std::endl << "Ответ: " << std::endl;
+        file << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ответ: " << std::endl;
     file.close();
 }
 
@@ -155,7 +163,7 @@ int Exem::startTest()
         system("clear");
         std::cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
         std::cout << "Задание номер " << i << std::endl << test_[i] << std::endl << "Ваш ответ: " << myUnswers_[i] << std::endl;
-        std::cout << "Ответ : " << unswers_[i];
+        std::cout << "Ответ : " << unswers_[i] << std::endl;
         if(myUnswers_[i] == unswers_[i])
         {
             score++;
@@ -163,41 +171,70 @@ int Exem::startTest()
         }
         else
             std::cout << "Неверно!" << std::endl;
-        std::cin.get();
+        std::cin.ignore(1);
+        std::cin.ignore(3,':');
+        int val;
+        try{
+        std::cin >> val;
+        }
+        catch(const std::exception &e)
+        {
+            std::cout << "васап нигас" << std::endl;
+        }
+        std::cout << val;
+        std::cin.ignore(3,':');
+        std::cin.ignore(3,':');
+
         system("clear");
     }
     return score;
 }
 
-void checkTest(char *fileName)//in process
+void checkTest(char *fileName)
 {
-    /*Task exem;
+    Exem *exem = new Exem;
     std::ifstream file(fileName);
     std::string tmp;
+    file.ignore(15, '-');
     file >> tmp;
-    if(tmp != "<<Задачи")
-        exem.number = 0;
-    file >> tmp;
-    if(tmp == "ЕГЭ")
-        exem.type = true;
-    else 
-        exem.type = false;
-    file >> tmp >> tmp >> tmp;
     tmp = "uns" + tmp + ".txt";
-    float *unswer = catchTheUnswer(tmp, exem.type);
-    std::getline(file, tmp);//first line complete*/
+    exem->testId_ = tmp;
+    tmp.resize(tmp.size() - 3);
+    int amount = std::stoi(tmp);
+    exem->unswers_ = catchTheUnswer(tmp, amount);
+    file.ignore(256, '\n');//first line complete
+    exem->test_ = new std::string[amount];
+    for(int i = 0; i < amount; i++)
+    {
+        file.ignore(256, '\n');//first line complete  
+        std::getline(file, exem->test_[i]);
+        file.ignore(256, ':');
+        try
+        {
+            file >> exem->test_[i];
+        }
+        catch(const except& e)
+        {
+            std::cout << "Вы недорешали тест либо неправильно ввели значение\nВернитесь к тесту и дорешайте его!" << '\n';
+            delete exem;
+            return;
+        }
+        file.ignore(256, '\n');//first line complete     
+    }
 }
 
-float* catchTheUnswer(std::string file, bool type)
+float* catchTheUnswer(std::string fileName, int amount)
 {
-    // std::ifstream unsFile(file);
-    // if(!unsFile.is_open())
-    //     throw except("Хьюстон, у нас проблема");
-    // float *unswer = new float[tasks[type]];
-    // for(int i = 0; i < tasks[type]; i++)
-    //     unsFile >> unswer[i];
-    // return unswer;
+    std::cout << fileName[0] << std::endl;
+    std::ifstream unsFile(fileName);
+    if(!unsFile.is_open())
+        throw except("Хьюстон, у нас проблема");
+    float *unswer = new float[amount];
+    for(int i = 0; i < amount; i++)
+        unsFile >> unswer[i];
+    return unswer;
 }
+
 
 Exem::~Exem()
 {

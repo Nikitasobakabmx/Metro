@@ -1,6 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "Exem.h"
+#include "except.h"
+//#include "Ansvers.h"
+        
+
 
 // Exem* setExem();
 
@@ -80,11 +85,11 @@ int main(int argc, char **argv)
         std::cout << "Ваш результат : " << score;
         std::cout << "\\" << exem->tasks_[exem->type_] << std::endl;        
     }
-    // else
-    // {
-    //     writeTest(test, exem);
-    //     std::cout << "Решите тест внутри файла и запустите программу еще раз, указав название файла в качестве параметра" << std::endl;
-    // }
+    else
+    {
+        exem->writeTest();
+        std::cout << "Решите тест внутри файла test" << exem->testId_ <<  ".txt и запустите программу еще раз, указав название файла в качестве параметра" << std::endl;
+    }
     std::cout << "Программа завершена" << std::endl;
     return 0;
 }

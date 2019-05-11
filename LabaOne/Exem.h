@@ -7,14 +7,15 @@ class Exem
         std::string *test_ = nullptr;//
         float *unswers_ = nullptr;//
         float *myUnswers_ = nullptr;//
-        std::string testId_;//
 
     public:
+        std::string testId_;//
         int tasks_[2];
         bool type_;//ОГЭ - 0/ ЕГЭ - 1
         int number_;// 0 for all
         int quantity_;//колличество заданий каждого типа
         bool output_;//0 - console / 1 - text file
+        Exem(){};
         Exem(bool a, int b, int c, bool d) : type_(a), number_(b), quantity_(c), output_(d){tasks_[0] = 20; tasks_[1] = 12;};
         /***********************************************
         * generate test, put it to string array(test_) *
@@ -54,16 +55,16 @@ class Exem
         * return result              *
         *****************************/
         //int checkTest();//union with startTest()
-        /******************************
-        *catch truth unswers for test *
-        ******************************/
-        //friend float* catchTheUnswer(std::string file, bool type);
+        /*******************************
+        * catch truth unswers for test *
+        *******************************/
+        friend void checkTest(char *fileName);
         /********************************
         * read file with unswer         *
         * read file with your unswer    *
         * rewrite file with your unswer *
         * add result to file            *
         ********************************/
-        friend void checkTest(char *fileName);
+        
         ~Exem();
 };
