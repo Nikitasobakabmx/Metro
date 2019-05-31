@@ -50,15 +50,15 @@
 
 int main(int argc, char **argv)
 {
-    // bool outPut;
-    // if(argc > 1)
-    // {
-    //     system("clear");
-    //     chekTest(argv[1]);
-    //     std::cout << "Программа завершена";
-    //     return 0;
-    // }
-    // system("clear");
+    //bool outPut;
+    if(argc == 2)
+    {
+        system("clear");
+        checkTest(argv[1]);
+        std::cout << "Программа завершена";
+        return 0;
+    }
+    system("clear");
     setlocale(LC_ALL, "Russian");
     std::string choose;
     Exem * exem = new Exem(1, 0, 1, 0);

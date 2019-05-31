@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     if(argc > 1)
     {
         system("clear");
-        chekTest(argv[1]);
+        checkTest(argv[1]);
         std::cout << "Программа завершена";
         return 0;
     }

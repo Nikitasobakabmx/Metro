@@ -48,6 +48,7 @@ class Exem
         * return float array(myUnswers_) *
         *********************************/
         int startTest();
+        int startTest(std::ostream &cout, std::istream &cin);
         /*****************************
         * check test in console      *
         * take your unswer           *

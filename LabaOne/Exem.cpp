@@ -149,43 +149,42 @@ void Exem::writeTest()
         file << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ответ: " << std::endl;
     file.close();
 }
-
 int Exem::startTest()
+{
+    return this->startTest(std::cout, std::cin);
+}
+
+
+int Exem::startTest(std::ostream &cout, std::istream &cin)
 {   
     int score = 0;
     myUnswers_ = new float[tasks_[type_]];
     for(int i = 0; i < tasks_[type_]; i++)
     {
-        system("clear");
-        std::cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
-        std::cout << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ваш ответ: ";
-        std::cin >> myUnswers_[i];
-        system("clear");
-        std::cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
-        std::cout << "Задание номер " << i << std::endl << test_[i] << std::endl << "Ваш ответ: " << myUnswers_[i] << std::endl;
-        std::cout << "Ответ : " << unswers_[i] << std::endl;
+        if(cin)
+        {
+            system("clear");
+            cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
+            cout << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ваш ответ: ";
+            cin >> myUnswers_[i];
+            system("clear");
+        }
+        cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
+        cout << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ваш ответ: " << myUnswers_[i] << std::endl;
+        cout << "Ответ : " << unswers_[i] << std::endl;
         if(myUnswers_[i] == unswers_[i])
         {
             score++;
-            std::cout << "Верно!" << std::endl;
+            cout << "Верно!" << std::endl;
         }
         else
-            std::cout << "Неверно!" << std::endl;
-        std::cin.ignore(1);
-        std::cin.ignore(3,':');
-        int val;
-        try{
-        std::cin >> val;
-        }
-        catch(const std::exception &e)
+            cout << "Неверно!" << std::endl;
+        if(cin)
         {
-            std::cout << "васап нигас" << std::endl;
+            cin.ignore(1);//for beauty
+            cin.ignore(3,'\n');
+            system("clear");
         }
-        std::cout << val;
-        std::cin.ignore(3,':');
-        std::cin.ignore(3,':');
-
-        system("clear");
     }
     return score;
 }
@@ -197,8 +196,8 @@ void checkTest(char *fileName)
     std::string tmp;
     file.ignore(15, '-');
     file >> tmp;
-    tmp = "uns" + tmp + ".txt";
     exem->testId_ = tmp;
+    tmp = "uns" + tmp + ".txt";
     tmp.resize(tmp.size() - 3);
     int amount = std::stoi(tmp);
     exem->unswers_ = catchTheUnswer(tmp, amount);
@@ -219,8 +218,12 @@ void checkTest(char *fileName)
             delete exem;
             return;
         }
-        file.ignore(256, '\n');//first line complete     
+        file.ignore(256, '\n');//добить хaпос
     }
+    file.close();
+    std::ofstream wFile(fileName);
+    exem->startTest(wFile, file);
+
 }
 
 float* catchTheUnswer(std::string fileName, int amount)
