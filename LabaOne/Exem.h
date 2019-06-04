@@ -48,7 +48,7 @@ class Exem
         * return float array(myUnswers_) *
         *********************************/
         int startTest();
-        int startTest(std::ostream &cout, std::istream &cin);
+        int startTest(std::ostream &cout, std::istream *cin, int &size);
         /*****************************
         * check test in console      *
         * take your unswer           *
@@ -59,7 +59,7 @@ class Exem
         /*******************************
         * catch truth unswers for test *
         *******************************/
-        friend void checkTest(char *fileName);
+        void checkTest(char *fileName);
         /********************************
         * read file with unswer         *
         * read file with your unswer    *

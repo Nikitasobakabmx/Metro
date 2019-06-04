@@ -33,7 +33,6 @@ std::string* Exem::generateTest()
                 std::cout << ex.what() << std::endl;
             }
         }
-        std::cout << "work" <<std::endl;
         testId_ = generateID();
         std::ofstream unsFile("uns" + testId_ + ".txt");
         for(int i = 0; i < tasks_[type_]; i++)
@@ -151,25 +150,27 @@ void Exem::writeTest()
 }
 int Exem::startTest()
 {
-    return this->startTest(std::cout, std::cin);
+    return this->startTest(std::cout, &std::cin, tasks_[type_]);
 }
 
 
-int Exem::startTest(std::ostream &cout, std::istream &cin)
+int Exem::startTest(std::ostream &cout, std::istream *cin, int &size)
 {   
     int score = 0;
-    myUnswers_ = new float[tasks_[type_]];
-    for(int i = 0; i < tasks_[type_]; i++)
+    if(cin)
+        myUnswers_ = new float[tasks_[type_]];
+
+    for(int i = 0; i < size; i++)
     {
         if(cin)
         {
             system("clear");
             cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
             cout << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ваш ответ: ";
-            cin >> myUnswers_[i];
+            (*cin) >> myUnswers_[i];
             system("clear");
+            cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
         }
-        cout << "<<Тест номер - " << testId_ << " >>" << std::endl;
         cout << "Задание номер " << i+1 << std::endl << test_[i] << std::endl << "Ваш ответ: " << myUnswers_[i] << std::endl;
         cout << "Ответ : " << unswers_[i] << std::endl;
         if(myUnswers_[i] == unswers_[i])
@@ -181,54 +182,58 @@ int Exem::startTest(std::ostream &cout, std::istream &cin)
             cout << "Неверно!" << std::endl;
         if(cin)
         {
-            cin.ignore(1);//for beauty
-            cin.ignore(3,'\n');
+            cin->ignore(1);//for beauty
+            cin->ignore(3,'\n');
             system("clear");
         }
     }
     return score;
 }
 
-void checkTest(char *fileName)
+void Exem::checkTest(char *fileName)
 {
-    Exem *exem = new Exem;
     std::ifstream file(fileName);
     std::string tmp;
-    file.ignore(15, '-');
+    file.ignore(256, '-');
     file >> tmp;
-    exem->testId_ = tmp;
-    tmp = "uns" + tmp + ".txt";
+    std::string unsFileName = "uns" + tmp + ".txt";
+    testId_ = tmp;
     tmp.resize(tmp.size() - 3);
     int amount = std::stoi(tmp);
-    exem->unswers_ = catchTheUnswer(tmp, amount);
+    unswers_ = catchTheUnswer(unsFileName, amount);
     file.ignore(256, '\n');//first line complete
-    exem->test_ = new std::string[amount];
+    if(test_ != nullptr)
+        delete [] test_;
+    test_ = new std::string[amount];
+    if(myUnswers_  != nullptr)
+        delete [] myUnswers_;
+    myUnswers_ = new float [amount];
     for(int i = 0; i < amount; i++)
     {
-        file.ignore(256, '\n');//first line complete  
-        std::getline(file, exem->test_[i]);
-        file.ignore(256, ':');
+        //узнаем задание
+        file.ignore(256, '\n');//first with number of question line complete  
+        std::getline(file, test_[i]);
+        file.ignore(256, ':');//to complete string
         try
         {
-            file >> exem->test_[i];
+            file >> myUnswers_[i];
         }
-        catch(const except& e)
+        catch(const std::exception &e)
         {
-            std::cout << "Вы недорешали тест либо неправильно ввели значение\nВернитесь к тесту и дорешайте его!" << '\n';
-            delete exem;
+            std::cout << "Вы недорешали тест либо неправильно ввели значение\nВернитесь к тесту и дорешайте его!" << std::endl;
             return;
         }
-        file.ignore(256, '\n');//добить хaпос
+        file.ignore(256, '\n');//to complete string
     }
     file.close();
     std::ofstream wFile(fileName);
-    exem->startTest(wFile, file);
+    startTest(wFile, nullptr, amount);
+    wFile.close();
 
 }
 
 float* catchTheUnswer(std::string fileName, int amount)
 {
-    std::cout << fileName[0] << std::endl;
     std::ifstream unsFile(fileName);
     if(!unsFile.is_open())
         throw except("Хьюстон, у нас проблема");
