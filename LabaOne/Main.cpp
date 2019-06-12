@@ -58,9 +58,9 @@ int main(int argc, char **argv)
     system("clear");
     setlocale(LC_ALL, "Russian");
     std::string choose;
-    Exem * exem = new Exem(1, 0, 1, 0);
+    Exem * exem = nullptr;
     std::cout << "Выберите где будете решать в консоли(0) или в текстовом файле(1)" << std::endl;
-    std::cin >> exem->output_;
+    std::cin >> outPut;
     while(true)
     {
         std::cout << "Выберите ОГЭ или ЕГЭ" << std::endl;
